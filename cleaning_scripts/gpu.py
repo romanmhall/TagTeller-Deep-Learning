@@ -9,11 +9,11 @@ def setup_gpu():
     gpus = tf.config.list_physical_devices('GPU')
 
     if not gpus:
-        print("❌ No GPU found. Using CPU for training (will be slower).")
+        print("No GPU found. Using CPU for training (will be slower).")
         return False
 
     # Print GPU information
-    print(f"✅ Found {len(gpus)} GPU(s):")
+    print(f"Found {len(gpus)} GPU(s):")
     for i, gpu in enumerate(gpus):
         print(f"   GPU {i + 1}: {gpu.name}")
 
@@ -21,9 +21,9 @@ def setup_gpu():
     for gpu in gpus:
         try:
             tf.config.experimental.set_memory_growth(gpu, True)
-            print(f"✅ Set memory growth for {gpu.name}")
+            print(f"Set memory growth for {gpu.name}")
         except RuntimeError as e:
-            print(f"❌ Error setting memory growth: {e}")
+            print(f"Error setting memory growth: {e}")
 
     # Optionally limit GPU memory usage if needed
     # tf.config.set_logical_device_configuration(
@@ -32,9 +32,9 @@ def setup_gpu():
     # )
 
     # Verify GPU is being used
-    print(f"✅ TensorFlow is using: {tf.config.get_visible_devices()}")
-    print(f"✅ Built with CUDA: {tf.test.is_built_with_cuda()}")
-    print(f"✅ GPU available: {tf.test.is_gpu_available()}")
+    print(f"TensorFlow is using: {tf.config.get_visible_devices()}")
+    print(f"Built with CUDA: {tf.test.is_built_with_cuda()}")
+    print(f"GPU available: {tf.test.is_gpu_available()}")
 
     return True
 
