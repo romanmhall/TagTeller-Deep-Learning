@@ -75,14 +75,14 @@ def enhance_image_for_classification(image_path, show_debug=False):
             plt.title('Enhanced')
             plt.show()
 
-        print(f"✅ Enhanced: {image_path}")
+        print(f"Enhanced: {image_path}")
 
     except Exception as e:
-        print(f"❌ Error processing {image_path}: {e}")
+        print(f"Error processing {image_path}: {e}")
 
 
 # Show a debug menu at startup
-print("📊 Image Enhancement for Brand Classification")
+print("Image Enhancement for Brand Classification")
 print("=" * 50)
 print("This script will enhance images to improve brand classification accuracy.")
 print("Enhancement includes: auto-rotation, contrast adjustment, and sharpening.")
@@ -141,13 +141,13 @@ while True:
             print(f"No images found in {brand} folder.")
             continue
 
-        print(f"\n📁 Processing {brand} folder ({len(image_files)} images)")
+        print(f"\nProcessing {brand} folder ({len(image_files)} images)")
 
         for file in image_files:
             image_path = os.path.join(brand_path, file)
             enhance_image_for_classification(image_path)
             total_images += 1
 
-    print(f"\n🎉 Processed {total_images} images across {len(brand_to_process)} brands!")
+    print(f"\nProcessed {total_images} images across {len(brand_to_process)} brands!")
 
-print("\n👋 Done enhancing images. This should help improve classification accuracy.")
+print("\nDone enhancing images. This should help improve classification accuracy.")
