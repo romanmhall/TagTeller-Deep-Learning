@@ -5,3 +5,6 @@ This project implements a deep learning pipeline using TensorFlow/Keras to conti
 The project idea is primarily focused on the idea of thrifting or second had shopping to enable the user to see what kind of discounted deals they are getting on the desired item. Project scope is fairly limited as training models such as this required hundreds of images, and with clothing labels that can be upwards to double digit styles that also require more images. These images are taken by me because sorting through places like Google Images is too unpredicatable and actually more time consuming than physically going and taking shots. It is also limited in the sense that I can only focus on small sections of things such as mens apparel or books genres that I know I would enjoy, simply put because that is what I shop for and collecting data on everything would be too large of a task.
 
 Launching a functional app that allows users to scan clothings labels, books, and anything that I can think would be the end product and this could also allow for further data collection that I otherwise would be unable to accomplish myself. 
+
+![image](https://github.com/user-attachments/assets/01a62559-6b41-411f-8f8c-756d3c0d2354)
+
