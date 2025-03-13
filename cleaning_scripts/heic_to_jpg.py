@@ -24,8 +24,8 @@ for brand_folder in os.listdir(LABELS_DIR):
                     img = Image.open(heic_path)
                     img.save(jpg_path, 'JPEG')
                     os.remove(heic_path)  # Delete original HEIC file
-                    print(f"✅ Converted: {heic_path} → {jpg_path}")
+                    print(f"Converted: {heic_path} → {jpg_path}")
                 except Exception as e:
-                    print(f"❌ Error converting {heic_path}: {e}")
+                    print(f"Error converting {heic_path}: {e}")
 
 print("🎉 All HEIC images converted to JPG!")
