@@ -1,0 +1,17 @@
+Back End:
+
+
+
+Front End:
+  - 03/14/2025 
+    One of the biggest issues I ran into while training this model had to be collecting data. With Iphone images being 3-4MB per and a requirement of at least 150 images per unique label it was taking up far too much storage on my personal phone. One aspect that
+    I wanted to incorporate regardless of this issue was the function to take images others are capturing and train on those images, essentially multiplying my personal ability and reach to capture data. 
+    https://imgur.com/a/RAaapTK
+
+    From the website you can upload multiple photos which goes directly to the server (or my personal computer); from there I can manually move photos to the desired class for further training.
+    https://imgur.com/a/A75T7OR
+
+  - 03/14/2025
+    Changed a majority of the front (and back) end to represent a bit more what I would like moving forward.
+    Before: https://imgur.com/a/A75T7OR
+    After: https://imgur.com/a/lv4jum7
