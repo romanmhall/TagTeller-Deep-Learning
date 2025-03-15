@@ -8,3 +8,4 @@ Launching a functional app that allows users to scan clothings labels, books, an
 
 ![image](https://github.com/user-attachments/assets/01a62559-6b41-411f-8f8c-756d3c0d2354)
 
+![image](https://github.com/user-attachments/assets/9cfde784-eea5-4fec-ab39-5fccc7c085c8)
