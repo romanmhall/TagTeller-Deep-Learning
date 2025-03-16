@@ -1,17 +1,25 @@
 Back End:
+03/15/2025
+- Uploaded most of the files for the backend models (manager_models.py, testing_models.py, and training_models.py) as well as the front end (/application_manager). But I am still figuring out GIT to
+  better publish the collected data set and all working files. 
 
+- Completed a minimal scrape of book websites for top rated titles and best selling authors to create a database to run what might be optical character recognition to recognize book titles.
+- Most of thought process behind this seems simple as all I would need to do is rotate the images (assuming the books are vertical on shelves) and from experience with OCR is should have little to no
+  issue picking up 70% of words, to which I can have some exception/assumption and just match titles as best fits.  
+- Overall goal is to scan a large section of a book shelve, get the titles back, and populate pricing and if the books are popular. 
+- Also, if you had an interest list or books that you wanted it would easily be able to be implemented into the end product. 
 
+- Started to organize main directories such as /book and what will be /clothing just to give some seperation to the different types of modeling implemented and have some organzition for different project steps. 
 
 Front End:
-  - 03/14/2025 
-    One of the biggest issues I ran into while training this model had to be collecting data. With Iphone images being 3-4MB per and a requirement of at least 150 images per unique label it was taking up far too much storage on my personal phone. One aspect that
-    I wanted to incorporate regardless of this issue was the function to take images others are capturing and train on those images, essentially multiplying my personal ability and reach to capture data. 
-    https://imgur.com/a/RAaapTK
+03/14/2025 
+- One of the biggest issues I ran into while training this model had to be collecting data. With Iphone images being 3-4MB per and a requirement of at least 150 images per unique label it was taking up far too much storage on my personal phone. One aspect that
+  I wanted to incorporate regardless of this issue was the function to take images others are capturing and train on those images, essentially multiplying my personal ability and reach to capture data. 
+  https://imgur.com/a/RAaapTK
 
-    From the website you can upload multiple photos which goes directly to the server (or my personal computer); from there I can manually move photos to the desired class for further training.
-    https://imgur.com/a/A75T7OR
+- From the website you can upload multiple photos which goes directly to the server (or my personal computer); from there I can manually move photos to the desired class for further training.
+  https://imgur.com/a/A75T7OR
 
-  - 03/14/2025
-    Changed a majority of the front (and back) end to represent a bit more what I would like moving forward.
-    Before: https://imgur.com/a/A75T7OR
-    After: https://imgur.com/a/lv4jum7
+- Changed a majority of the front (and back) end to represent a bit more what I would like moving forward.
+  Before: https://imgur.com/a/A75T7OR
+  After: https://imgur.com/a/lv4jum7
