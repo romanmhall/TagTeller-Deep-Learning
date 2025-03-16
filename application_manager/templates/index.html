@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Brand Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        .tab.active {
+            background-color: #2196F3;
+            color: white;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0b7dda;
+        }
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            display: none;
+        }
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 10px auto;
+            display: block;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .training-images-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            padding: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clothing Brand Detector</h1>
+
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('detect')">Detect Brand</div>
+        <div class="tab" onclick="switchTab('train')">Train Model</div>
+    </div>
+
+    <!-- Detection Page -->
+    <div id="detect-page" class="page active">
+        <h2>Detect Clothing Brand</h2>
+        <p>Upload a single image to identify the clothing brand tag.</p>
+
+        <div class="upload-area" id="detect-upload-area" onclick="document.getElementById('detect-file-input').click()">
+            <p>Click to upload an image or drag and drop</p>
+            <input type="file" id="detect-file-input" accept="image/*" class="hidden" onchange="previewImage(this, 'detect-image-preview')">
+        </div>
+
+        <img id="detect-image-preview" class="image-preview" style="display:none;">
+
+        <div class="input-group">
+            <button onclick="detectBrand()">Detect Brand</button>
+        </div>
+
+        <div id="detection-result" class="result-area">
+            <h3>Detection Result</h3>
+            <p id="brand-result">The detected brand will appear here.</p>
+        </div>
+    </div>
+
+    <!-- Training Page -->
+    <div id="train-page" class="page">
+        <h2>Train Model with New Images</h2>
+        <p>Upload multiple images to train the model for a specific brand.</p>
+
+        <div class="input-group">
+            <input type="text" id="brand-name" placeholder="Enter brand name (e.g. Nike)" required>
+        </div>
+
+        <div class="upload-area" id="train-upload-area" onclick="document.getElementById('train-file-input').click()">
+            <p>Click to upload images or drag and drop</p>
+            <input type="file" id="train-file-input" accept="image/*" multiple class="hidden" onchange="handleTrainingImages(this)">
+        </div>
+
+        <div class="training-images-list" id="training-images-list">
+            <p>Selected images will appear here</p>
+        </div>
+
+        <div class="input-group">
+            <button onclick="uploadTrainingImages()">Upload Training Images</button>
+        </div>
+
+        <div id="training-result" class="result-area">
+            <h3>Upload Status</h3>
+            <p id="upload-result">Upload status will appear here.</p>
+        </div>
+    </div>
+
+    <script>
+        // Switch between detection and training tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+
+            if (tabName === 'detect') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('detect-page').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('train-page').classList.add('active');
+            }
+        }
+
+        // Preview image for detection
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle multiple training images
+        function handleTrainingImages(input) {
+            const listElement = document.getElementById('training-images-list');
+            listElement.innerHTML = '';
+
+            if (input.files.length > 0) {
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    const fileItem = document.createElement('div');
+                    fileItem.textContent = `${i+1}. ${file.name}`;
+                    listElement.appendChild(fileItem);
+                }
+            } else {
+                listElement.innerHTML = '<p>No files selected</p>';
+            }
+        }
+
+        // Detection functionality
+        function detectBrand() {
+            const fileInput = document.getElementById('detect-file-input');
+            if (!fileInput.files.length) {
+                alert('Please select an image first');
+                return;
+            }
+
+            // Show loading state
+            const resultElement = document.getElementById('brand-result');
+            resultElement.textContent = 'Processing image...';
+            document.getElementById('detection-result').style.display = 'block';
+
+            // Create FormData and append the image
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            // Send image to server
+            fetch('/detect_brand', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    let errorMessage = `<strong>Error:</strong> ${data.error}`;
+                    if (data.solution) {
+                        errorMessage += `<br><strong>Solution:</strong> ${data.solution}`;
+                    }
+                    resultElement.innerHTML = errorMessage;
+                } else if (data.brand === 'Unknown') {
+                    resultElement.innerHTML = `
+                        <strong>Result:</strong> No known brand detected<br>
+                        <strong>Message:</strong> ${data.message}
+                    `;
+                } else {
+                    resultElement.innerHTML = `
+                        <strong>Detected Brand:</strong> ${data.brand}<br>
+                        <strong>Confidence:</strong> ${data.confidence}%
+                    `;
+                }
+            })
+            .catch(error => {
+                resultElement.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                console.error('Error:', error);
+            });
+        }
+
+        // Training functionality
+
+        function checkModelStatus() {
+    fetch('/check_model_status')
+        .then(response => response.json())
+        .then(data => {
+            const statusElement = document.createElement('div');
+            statusElement.style.margin = '10px 0';
+            statusElement.style.padding = '8px';
+            statusElement.style.borderRadius = '4px';
+
+            if (data.modelAvailable) {
+                statusElement.style.backgroundColor = '#d4edda';
+                statusElement.style.color = '#155724';
+                statusElement.innerHTML = `<strong>Model Status:</strong> Ready (${data.labelCount} brands)`;
+            } else {
+                statusElement.style.backgroundColor = '#f8d7da';
+                statusElement.style.color = '#721c24';
+                statusElement.innerHTML = `<strong>Model Status:</strong> No trained model available. Please train a model first.`;
+            }
+
+            document.querySelector('h1').after(statusElement);
+        })
+        .catch(error => console.error('Error checking model status:', error));
+}
+
+// Call this function when the page loads
+checkModelStatus();
+
+        function uploadTrainingImages() {
+            const brandName = document.getElementById('brand-name').value;
+            const fileInput = document.getElementById('train-file-input');
+
+            if (!brandName) {
+                alert('Please enter a brand name');
+                return;
+            }
+
+            if (!fileInput.files.length) {
+                alert('Please select at least one image');
+                return;
+            }
+
+            // Show loading state
+            const resultElement = document.getElementById('upload-result');
+            resultElement.textContent = `Uploading ${fileInput.files.length} images for brand "${brandName}"...`;
+            document.getElementById('training-result').style.display = 'block';
+
+            // Create FormData and append files
+            const formData = new FormData();
+            formData.append('brand', brandName);
+
+            // Append all selected files
+            for (let i = 0; i < fileInput.files.length; i++) {
+                formData.append('files', fileInput.files[i]);
+            }
+
+            // Send files to server
+            fetch('/upload_training_images', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultElement.innerHTML = `
+                        <strong>Upload Complete!</strong><br>
+                        Successfully uploaded ${data.count} images for brand "${data.brand}".<br>
+                    `;
+                } else {
+                    resultElement.innerHTML = `<strong>Error:</strong> ${data.error}`;
+                }
+            })
+            .catch(error => {
+                resultElement.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                console.error('Error:', error);
+            });
+        }
+
+        // Add drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const detectDropArea = document.getElementById('detect-upload-area');
+            const trainDropArea = document.getElementById('train-upload-area');
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                detectDropArea.addEventListener(eventName, preventDefaults, false);
+                trainDropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                detectDropArea.addEventListener(eventName, highlight, false);
+                trainDropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                detectDropArea.addEventListener(eventName, unhighlight, false);
+                trainDropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            detectDropArea.addEventListener('drop', handleDetectDrop, false);
+            trainDropArea.addEventListener('drop', handleTrainDrop, false);
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight(e) {
+                this.style.borderColor = '#2196F3';
+                this.style.backgroundColor = '#f0f7ff';
+            }
+
+            function unhighlight(e) {
+                this.style.borderColor = '#ccc';
+                this.style.backgroundColor = '';
+            }
+
+            function handleDetectDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    document.getElementById('detect-file-input').files = files;
+                    previewImage(document.getElementById('detect-file-input'), 'detect-image-preview');
+                }
+            }
+
+            function handleTrainDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    document.getElementById('train-file-input').files = files;
+                    handleTrainingImages(document.getElementById('train-file-input'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
